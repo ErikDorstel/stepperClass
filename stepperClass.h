@@ -1,11 +1,11 @@
 class stepperClass {
   public:
-  uint8_t enaPin;
+  uint8_t stepPin;
+  uint8_t dirPin;
   uint8_t ms1Pin;
   uint8_t ms2Pin;
   uint8_t ms3Pin;
-  uint8_t stepPin;
-  uint8_t dirPin;
+  uint8_t enaPin;
   uint8_t micro=0;
   uint16_t speed=10;
   uint16_t timeUnit=60;
@@ -23,22 +23,18 @@ class stepperClass {
   void (*loopPointer)()=nullptr;
 
   void begin(
-    uint8_t _enaPin=0,
+    uint8_t _stepPin=0,
+    uint8_t _dirPin=0,
     uint8_t _ms1Pin=0,
     uint8_t _ms2Pin=0,
     uint8_t _ms3Pin=0,
-    uint8_t _stepPin=0,
-    uint8_t _dirPin=0) {
-      enaPin=_enaPin;
+    uint8_t _enaPin=0) {
+      stepPin=_stepPin;
+      dirPin=_dirPin;
       ms1Pin=_ms1Pin;
       ms2Pin=_ms2Pin;
       ms3Pin=_ms3Pin;
-      stepPin=_stepPin;
-      dirPin=_dirPin;
-      if (enaPin) {
-        pinMode(enaPin,OUTPUT);
-        digitalWrite(enaPin,ena);
-      }
+      enaPin=_enaPin;
       if (stepPin && dirPin) {
         pinMode(stepPin,OUTPUT);
         pinMode(dirPin,OUTPUT);
@@ -49,6 +45,10 @@ class stepperClass {
         pinMode(ms1Pin,OUTPUT);
         pinMode(ms2Pin,OUTPUT);
         pinMode(ms3Pin,OUTPUT);
+      }
+      if (enaPin) {
+        pinMode(enaPin,OUTPUT);
+        digitalWrite(enaPin,ena);
       }
       calcStepWidth();
       setMicro(micro);
@@ -132,13 +132,17 @@ class stepperClass {
   }
 
   void enable() {
-    digitalWrite(enaPin,0);
-    ena=0;
+    if (enaPin) {
+      digitalWrite(enaPin,0);
+      ena=0;
+    }
   }
 
   void disable() {
-    digitalWrite(enaPin,1);
-    ena=1;
+    if (enaPin) {
+      digitalWrite(enaPin,1);
+      ena=1;
+    }
   }
 
   void setLoop(void (*value)()) {

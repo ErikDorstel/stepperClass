@@ -29,7 +29,7 @@ void myStepperLoop() {
 }
 
 void setup() {
-  myStepper.begin(23,19,18,17,16,15);
+  myStepper.begin(16,15,19,18,17,23);
   myStepper.setInputs(5,25,26,27,32,33);
   myStepper.setLoop(myStepperLoop);
   myStepper.setSpeed(20,60); // Umdrehungen pro Minute

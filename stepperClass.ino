@@ -5,6 +5,7 @@ stepperClass myStepper;
 void myStepperLoop() {
   if (myStepper.input(32) && myStepper.ifPos(0)==false) {
     myStepper.stop();
+    myStepper.setZero();
     myStepper.storePos(0);
   }
   if (myStepper.input(33) && myStepper.ifPos(0)==true) {

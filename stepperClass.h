@@ -15,7 +15,6 @@ class stepperClass {
   bool step=0;
   bool dir=0;
   bool busy=0;
-  bool homed=0;
   int currentPos=0;
   int futurePos=0;
   int posStore[32]={0};
@@ -99,6 +98,11 @@ class stepperClass {
       posStore[place]=value%steps;
     }
     posIf[place]=1;
+  }
+
+  void setZero() {
+    futurePos-=currentPos;
+    currentPos=0;
   }
 
   bool ifPos(uint8_t place=0) {

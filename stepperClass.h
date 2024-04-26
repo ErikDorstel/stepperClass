@@ -105,6 +105,15 @@ class stepperClass {
     currentPos=0;
   }
 
+  void prune() {
+    currentPos%=steps;
+    futurePos%=steps;
+  }
+
+  int toPrune(int value) {
+    return value%steps;
+  }
+
   bool ifPos(uint8_t place=0) {
     return posIf[place];
   }
@@ -171,6 +180,9 @@ class stepperClass {
     static uint64_t timer=micros();
     if (micros()>=timer) {
       timer=micros()+stepWidth;
+      if (ena) {
+        return;
+      }
       if (step) {
         step=false;
         digitalWrite(stepPin,false);

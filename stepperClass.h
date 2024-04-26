@@ -23,8 +23,8 @@ class stepperClass {
   void (*loopPointer)()=nullptr;
 
   void begin(
-    uint8_t _stepPin=0,
-    uint8_t _dirPin=0,
+    uint8_t _stepPin,
+    uint8_t _dirPin,
     uint8_t _ms1Pin=0,
     uint8_t _ms2Pin=0,
     uint8_t _ms3Pin=0,
@@ -69,7 +69,7 @@ class stepperClass {
     }
   }
 
-  void delay(uint value) {
+  void delay(uint32_t value) {
     uint64_t timer=millis()+value;
     while (millis()<timer) {
       worker();
@@ -134,15 +134,15 @@ class stepperClass {
   void enable() {
     if (enaPin) {
       digitalWrite(enaPin,0);
-      ena=0;
     }
+    ena=0;
   }
 
   void disable() {
     if (enaPin) {
       digitalWrite(enaPin,1);
-      ena=1;
     }
+    ena=1;
   }
 
   void setLoop(void (*value)()) {

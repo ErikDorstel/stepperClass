@@ -9,10 +9,10 @@ void myStepperLoop() {
     myStepper.storePos(0);
   }
   if (myStepper.input(33) && myStepper.ifPos(0)==true) {
-    myStepper.turn(10);
+    myStepper.turn(10);   // +10 steps
   }
   if (myStepper.input(25) && myStepper.ifPos(0)==true) {
-    myStepper.turn(-10);
+    myStepper.go(-0.5);   // -0.5 mm
   }
   if (myStepper.input(26) && myStepper.ifPos(0)==true) {
     myStepper.turnAbs(90,360);
@@ -34,6 +34,8 @@ void setup() {
   myStepper.setLoop(myStepperLoop);
   myStepper.setSpeed(20,60); // Umdrehungen pro Minute
   myStepper.setSteps(200);   // Schritte pro Umdrehung
+  myStepper.setLength(5);    // mm pro Umdrehung
+  myStepper.setFeed(100,60); // mm pro Minute
   myStepper.setMicro(0);     // Microsteps 0-7
   myStepper.enable();        // enable Motor
 }

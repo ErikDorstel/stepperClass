@@ -8,8 +8,11 @@ class stepperClass {
   uint8_t enaPin;
   uint8_t micro=0;
   uint16_t speed=10;
-  uint16_t timeUnit=60;
+  float feed=50;
+  uint16_t timeUnitForSpeed=60;
+  uint16_t timeUnitForFeed=60;
   uint16_t steps=200;
+  float length=5;
   uint32_t stepWidth;
   bool ena=1;
   bool step=0;
@@ -45,18 +48,24 @@ class stepperClass {
         pinMode(ms1Pin,OUTPUT);
         pinMode(ms2Pin,OUTPUT);
         pinMode(ms3Pin,OUTPUT);
+        setMicro(micro);
       }
       if (enaPin) {
         pinMode(enaPin,OUTPUT);
         digitalWrite(enaPin,ena);
       }
-      calcStepWidth();
-      setMicro(micro);
     }
   
   void turn(int value) {
+    calcStepWidthFromSpeed();
     futurePos=currentPos+value;
     busy=true;
+  }
+
+  void go(float value) {
+    calcStepWidthFromFeed();
+    value*=steps/length;
+    futurePos=currentPos+value;
   }
 
   void stop() {
@@ -78,17 +87,34 @@ class stepperClass {
 
   void setSteps(uint16_t value) {
     steps=value;
-    calcStepWidth();
+    calcStepWidthFromSpeed();
   }
 
   void setSpeed(uint16_t value1,uint16_t value2=60) {
     speed=value1;
-    timeUnit=value2;
-    calcStepWidth();
+    timeUnitForSpeed=value2;
+    calcStepWidthFromSpeed();
   }
 
-  void calcStepWidth() {
-    stepWidth=((uint64_t)timeUnit*1000*1000)/(steps*2*speed);
+  void setLength(float value) {
+    length=value;
+    speed=feed/length;
+    calcStepWidthFromFeed();
+  }
+
+  void setFeed(float value1,uint16_t value2=60) {
+    feed=value1;
+    timeUnitForFeed=value2;
+    calcStepWidthFromFeed();
+  }
+
+  void calcStepWidthFromSpeed() {
+    stepWidth=((uint64_t)timeUnitForSpeed*1000*1000)/(steps*2*speed);
+  }
+
+  void calcStepWidthFromFeed() {
+    speed=feed/length;
+    stepWidth=((uint64_t)timeUnitForFeed*1000*1000)/(steps*2*speed);
   }
 
   void storePos(uint8_t place=0,int value=-1) {
@@ -119,6 +145,7 @@ class stepperClass {
   }
 
   void turnPos(uint8_t place=0) {
+    calcStepWidthFromSpeed();
     futurePos=currentPos+(posStore[place]-(currentPos%steps));
     busy=true;
   }
@@ -127,6 +154,7 @@ class stepperClass {
     if (value2==-1) {
       value2=steps;
     }
+    calcStepWidthFromSpeed();
     futurePos=currentPos+((steps*value1/value2)-(currentPos%steps));
     busy=true;
   }

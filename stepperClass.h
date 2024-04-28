@@ -86,25 +86,20 @@ class stepperClass {
 
   void setSteps(uint16_t value) {
     steps=value;
-    calcStepWidthFromSpeed();
   }
 
   void setSpeed(uint16_t value1,uint16_t value2=60) {
     speed=value1;
     timeUnitForSpeed=value2;
-    calcStepWidthFromSpeed();
   }
 
   void setLength(float value) {
     length=value;
-    speed=feed/length;
-    calcStepWidthFromFeed();
   }
 
   void setFeed(float value1,uint16_t value2=60) {
     feed=value1;
     timeUnitForFeed=value2;
-    calcStepWidthFromFeed();
   }
 
   void calcStepWidthFromSpeed() {
@@ -112,8 +107,8 @@ class stepperClass {
   }
 
   void calcStepWidthFromFeed() {
-    speed=feed/length;
-    stepWidth=((uint64_t)timeUnitForFeed*1000*1000)/(steps*2*speed);
+    int feedSpeed=feed/length;
+    stepWidth=((uint64_t)timeUnitForFeed*1000*1000)/(steps*2*feedSpeed);
   }
 
   void storePos(uint8_t place=0,int value=-1) {

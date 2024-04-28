@@ -92,6 +92,7 @@ class stepperClass {
   void setSpeed(uint16_t value1,uint16_t value2=60) {
     speed=value1;
     timeUnitForSpeed=value2;
+    calcStepWidthFromSpeed();
   }
 
   void setLength(float value) {
@@ -101,6 +102,7 @@ class stepperClass {
   void setFeed(float value1,uint16_t value2=60) {
     feed=value1;
     timeUnitForFeed=value2;
+    calcStepWidthFromFeed();
   }
 
   void calcStepWidthFromSpeed() {

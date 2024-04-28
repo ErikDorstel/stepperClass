@@ -65,6 +65,7 @@ class stepperClass {
   void go(float value) {
     calcStepWidthFromFeed();
     futurePos=currentPos+((value*steps)/length);
+    busy=true;
   }
 
   void stop() {
@@ -107,7 +108,7 @@ class stepperClass {
   }
 
   void calcStepWidthFromFeed() {
-    int feedSpeed=feed/length;
+    float feedSpeed=feed/length;
     stepWidth=((uint64_t)timeUnitForFeed*1000*1000)/(steps*2*feedSpeed);
   }
 

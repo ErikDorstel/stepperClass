@@ -18,7 +18,7 @@ void myStepperLoop() {
     myStepper.turnAbs(90,360);
     myStepper.wait();
     myStepper.delay(1000);
-    myStepper.turnAbs(270,360);
+    myStepper.goAbs(3.75);
   }
   if (myStepper.input(27) && myStepper.ifPos(0)==true) {
     myStepper.turnPos(0);

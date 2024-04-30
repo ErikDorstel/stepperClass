@@ -131,6 +131,9 @@ class stepperClass {
   void prune() {
     currentPos%=steps;
     futurePos%=steps;
+    for (int i=0;i<sizeof(posStore)/4;i++) {
+      posStore[i]%=steps;
+    }
   }
 
   int toPrune(int value) {
@@ -143,7 +146,13 @@ class stepperClass {
 
   void turnPos(uint8_t place=0) {
     calcStepWidthFromSpeed();
-    futurePos=currentPos+(posStore[place]-(currentPos%steps));
+    futurePos=posStore[place];
+    busy=true;
+  }
+
+  void goPos(uint8_t place=0) {
+    calcStepWidthFromFeed();
+    futurePos=posStore[place];
     busy=true;
   }
 
@@ -152,6 +161,15 @@ class stepperClass {
       value2=steps;
     }
     calcStepWidthFromSpeed();
+    futurePos=currentPos+((steps*value1/value2)-(currentPos%steps));
+    busy=true;
+  }
+
+  void goAbs(float value1,float value2=-1) {
+    if (value2==-1) {
+      value2=length;
+    }
+    calcStepWidthFromFeed();
     futurePos=currentPos+((steps*value1/value2)-(currentPos%steps));
     busy=true;
   }

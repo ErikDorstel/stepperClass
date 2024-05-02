@@ -19,7 +19,7 @@ class stepperClass {
   bool dir=0;
   bool busy=0;
   int currentPos=0;
-  int futurePos=0;
+  int targetPos=0;
   int posStore[32]={0};
   bool posIf[32]={0};
   bool loopActive=0;
@@ -58,18 +58,18 @@ class stepperClass {
   
   void turn(int value) {
     calcStepWidthFromSpeed();
-    futurePos=currentPos+value;
+    targetPos=currentPos+value;
     busy=true;
   }
 
   void go(float value) {
     calcStepWidthFromFeed();
-    futurePos=currentPos+((value*steps)/length);
+    targetPos=currentPos+((value*steps)/length);
     busy=true;
   }
 
   void stop() {
-    futurePos=currentPos;
+    targetPos=currentPos;
   }
 
   void wait() {
@@ -124,13 +124,13 @@ class stepperClass {
   }
 
   void setZero() {
-    futurePos-=currentPos;
+    targetPos-=currentPos;
     currentPos=0;
   }
 
   void prune() {
     currentPos%=steps;
-    futurePos%=steps;
+    targetPos%=steps;
     for (int i=0;i<sizeof(posStore)/4;i++) {
       posStore[i]%=steps;
     }
@@ -146,13 +146,13 @@ class stepperClass {
 
   void turnPos(uint8_t place=0) {
     calcStepWidthFromSpeed();
-    futurePos=posStore[place];
+    targetPos=posStore[place];
     busy=true;
   }
 
   void goPos(uint8_t place=0) {
     calcStepWidthFromFeed();
-    futurePos=posStore[place];
+    targetPos=posStore[place];
     busy=true;
   }
 
@@ -161,7 +161,7 @@ class stepperClass {
       value2=steps;
     }
     calcStepWidthFromSpeed();
-    futurePos=currentPos+((steps*value1/value2)-(currentPos%steps));
+    targetPos=currentPos+((steps*value1/value2)-(currentPos%steps));
     busy=true;
   }
 
@@ -170,7 +170,7 @@ class stepperClass {
       value2=length;
     }
     calcStepWidthFromFeed();
-    futurePos=currentPos+((steps*value1/value2)-(currentPos%steps));
+    targetPos=currentPos+((steps*value1/value2)-(currentPos%steps));
     busy=true;
   }
 
@@ -231,7 +231,7 @@ class stepperClass {
         digitalWrite(stepPin,false);
         return;
       } else {
-        if (futurePos>currentPos) {
+        if (targetPos>currentPos) {
           dir=true;
           step=true;
           digitalWrite(dirPin,true);
@@ -239,7 +239,7 @@ class stepperClass {
           currentPos++;
           busy=true;
         }
-        else if (futurePos<currentPos) {
+        else if (targetPos<currentPos) {
           dir=false;
           step=true;
           digitalWrite(dirPin,false);
